@@ -129,6 +129,3 @@ def train_all_models(df, target_column="quality"):
     print("\nDataset after removing randomly high correlated columns:")
     high_corr_df = high_correlation_columns(df, target_column)
     train_model(high_corr_df, target_column)
-
-
-train_all_models(df)
