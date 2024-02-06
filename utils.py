@@ -23,13 +23,36 @@ df = pd.read_csv("winequality-red.csv", sep=";")
 target_column = "quality"
 
 
-def check_correlation(df, target_column):
+def check_correlation(df: pd.DataFrame, target_column: str) -> pd.Series:
+    """
+    Calculate correlation between each feature and target column.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing the dataset.
+        target_column (str): Name of the target column.
+
+    Returns:
+        pd.Series: Series containing correlation values for each feature.
+    """
     columns_to_correlate = df.columns.difference([target_column])
     correlations = df[columns_to_correlate].corrwith(df[target_column])
     return correlations
 
 
-def low_correlation_columns(df, target_column, threshold=0.17):
+def low_correlation_columns(
+    df: pd.DataFrame, target_column: str, threshold: float = 0.17
+) -> pd.DataFrame:
+    """
+    Select columns with correlation above a specified threshold.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing the dataset.
+        target_column (str): Name of the target column.
+        threshold (float): Threshold for correlation.
+
+    Returns:
+        pd.DataFrame: DataFrame containing selected columns.
+    """
     correlations = check_correlation(df, target_column)
     selected_columns = [
         col
@@ -41,7 +64,20 @@ def low_correlation_columns(df, target_column, threshold=0.17):
     return df_selected
 
 
-def high_correlation_columns(df, target_column, threshold=0.4):
+def high_correlation_columns(
+    df: pd.DataFrame, target_column: str, threshold: float = 0.4
+) -> pd.DataFrame:
+    """
+    Remove columns with high correlation.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing the dataset.
+        target_column (str): Name of the target column.
+        threshold (float): Threshold for correlation.
+
+    Returns:
+        pd.DataFrame: DataFrame containing selected columns.
+    """
     correlation_matrix = df.drop(columns=[target_column]).corr().abs()
     upper_triangle = correlation_matrix.where(
         np.triu(np.ones(correlation_matrix.shape), k=1).astype(bool)
@@ -67,7 +103,14 @@ def high_correlation_columns(df, target_column, threshold=0.4):
     return df
 
 
-def train_model(df, target_column):
+def train_model(df: pd.DataFrame, target_column: str) -> None:
+    """
+    Train and evaluate a RandomForestRegressor model.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing the dataset.
+        target_column (str): Name of the target column.
+    """
     # Then the function should split the data into X, y.
     X = df.drop(target_column, axis=1)
     y = df[target_column]
@@ -94,7 +137,14 @@ def train_model(df, target_column):
     print(f"\nMean Absolute Error: {mae}\n")
 
 
-def train_all_models(df, target_column="quality"):
+def train_all_models(df: pd.DataFrame, target_column: str = "quality") -> None:
+    """
+    Train and evaluate multiple models using different preprocessing techniques.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing the dataset.
+        target_column (str, optional): Name of the target column. Defaults to "quality".
+    """
     print("\nFull Dataset:")
     train_model(df, target_column)
 
